@@ -1,10 +1,14 @@
 // init audio
 var success_scan = document.createElement("audio");
-audioElement.src = "/audio/scan_success.mp3";
+success_scan.src = "/audio/scan_success.mp3";
 var failed_scan = document.createElement("audio");
-audioElement.src = "/audio/scan_failed.mp3";
+failed_scan.src = "/audio/scan_failed.mp3";
+
+$("#readerSection").hide();
 
 $(document).ready(function () {
+    // show when loading done
+    $("#readerSection").show();
     // cams init
     // This method will trigger user permissions
     const html5QrCode = new Html5Qrcode(/* element id */ "reader");
@@ -12,6 +16,8 @@ $(document).ready(function () {
     var camSelected = 0;
     var camControlBtn = $("button.cameraControl");
     var camChangeBtn = $("button#changeCamera");
+    var lastResult,
+        countResults = 0;
 
     Html5Qrcode.getCameras()
         .then((devices) => {
@@ -30,7 +36,7 @@ $(document).ready(function () {
         });
 
     // Function for turn on camera
-    function turnOnCamera(api, cameraControlBtnElementSelector) {
+    function turnOnCamera(api) {
         api.start(
             cams[camSelected].id,
             {
@@ -39,6 +45,12 @@ $(document).ready(function () {
             },
             (decodedText, decodedResult) => {
                 // do something when code is read
+                if (decodedText !== lastResult) {
+                    ++countResults;
+                    lastResult = decodedText;
+                    // Handle on success condition with the decoded message.
+                    success_scan.play();
+                }
             },
             (errorMessage) => {
                 // parse error, ignore it.
@@ -49,7 +61,7 @@ $(document).ready(function () {
         });
     }
     // Function for turn off camera
-    function turnOffCamera(api, cameraControlBtnElementSelector) {
+    function turnOffCamera(api) {
         api.stop()
             .then((ignore) => {
                 // QR Code scanning is stopped.
@@ -105,14 +117,23 @@ $(document).ready(function () {
     }
 
     function waitForEl(selector, callback) {
-        console.log("searching");
-
         if (jQuery(selector).length) {
             callback();
         } else {
             setTimeout(function () {
                 waitForEl(selector, callback);
             }, 100);
+        }
+    }
+    var counter = 0;
+    function scanDelayer() {
+        if (counter <= 3) {
+            setTimeout(function () {
+                counter++;
+                scanDelayer();
+            }, 1000);
+        } else {
+            counter = 0;
         }
     }
 

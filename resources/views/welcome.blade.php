@@ -1,7 +1,6 @@
 @extends('layout.main')
 
 @section('content')
-  <div id="loading"></div>
   <div class="container" id="readerSection">
     <div class="row justify-content-center">
       <div class="col-md-5 col-12 text-center">
@@ -16,19 +15,7 @@
           </div>
         </div>
         <div id="reader" width="600px" height="600px"></div>
-
-        <h2>Sound Information</h2>
-        <div id="length">Duration:</div>
-        <div id="source">Source:</div>
-        <div id="status" style="color:red;">Status: Loading</div>
-        <hr>
-        <h2>Control Buttons</h2>
-        <button id="play">Play</button>
-        <button id="pause">Pause</button>
-        <button id="restart">Restart</button>
-        <hr>
-        <h2>Playing Information</h2>
-        <div id="currentTime">0</div>
+        <button class="btn btn-dark mt-4 cameraControl" data-is-on="false">Start</button>
 
       </div>
     </div>
