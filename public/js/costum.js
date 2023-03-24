@@ -3,7 +3,7 @@ var success_scan = document.createElement("audio");
 success_scan.src = "/audio/scan_success.mp3";
 var failed_scan = document.createElement("audio");
 failed_scan.src = "/audio/scan_failed.mp3";
-
+let lastTime = 0;
 $("#readerSection").hide();
 
 $(document).ready(function () {
@@ -44,12 +44,26 @@ $(document).ready(function () {
                 qrbox: { width: 250, height: 250 }, // Optional, if you want bounded box UI
             },
             (decodedText, decodedResult) => {
+                // // do something when code is read
+                // if (decodedText !== lastResult) {
+                //     ++countResults;
+                //     lastResult = decodedText;
+                //     // Handle on success condition with the decoded message.
+
+                //     // Add a 2-second delay before executing the next code.
+                //     if (delayTimer != null) {
+                //         clearTimeout(delayTimer);
+                //     } else {
+                //         success_scan.play();
+                //     }
+                //     delayTimer = setTimeout(() => {}, 2000);
+                // }
                 // do something when code is read
-                if (decodedText !== lastResult) {
-                    ++countResults;
-                    lastResult = decodedText;
-                    // Handle on success condition with the decoded message.
+                const currentTime = Date.now();
+                if (currentTime - lastTime >= 2000) {
+                    console.log("played");
                     success_scan.play();
+                    lastTime = currentTime;
                 }
             },
             (errorMessage) => {
